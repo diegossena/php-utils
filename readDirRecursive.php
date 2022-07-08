@@ -3,9 +3,10 @@
 /**
  * @author diegossena
  * @param string $path
+ * @param int $depth
  * @result array
  */
-function readDirRecursive($path = '.')
+function readDirRecursive($path = '.', $depth = PHP_INT_MAX)
 {
   $files = array();
   if (($dir = opendir($path)) === false)
@@ -20,7 +21,10 @@ function readDirRecursive($path = '.')
       continue;
     $file_path  = $path . $file_name;
     if (is_dir($file_path))
-      $files = array_merge($files, readDirRecursive($file_path));
+      if ($depth)
+        $files = array_merge($files, readDirRecursive($file_path, $depth - 1));
+      else
+        $files[] = $file_path;
     else if (is_file($file_path))
       $files[] = $file_path;
   }
